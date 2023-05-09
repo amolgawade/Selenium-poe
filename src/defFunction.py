@@ -8,6 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from locators import HomePageLocators
 import openpyxl
 import pyperclip
+from selenium.webdriver.chrome.options import Options
 
 file_name = "F:\\upsc_questions.xlsx"  # Note the double backslashes or use forward slashes
 
@@ -18,7 +19,6 @@ class PoeSite:
         self.clipboard = None
         self.driver = webdriver.Chrome()
         self.driver.maximize_window()
-        # Set implicit wait to 10 seconds
         self.driver.implicitly_wait(10)
 
     def navigate_to_website(self, url):
@@ -41,16 +41,12 @@ class PoeSite:
         self.driver.find_element(*HomePageLocators.login_butt).click()
 
     def wait(self, seconds):
-        # Wait for the specified number of seconds
         time.sleep(1)
 
     def close_browser(self):
-        # Close the browser
         self.driver.quit()
 
-    def ask_questions(self):
-        # Create a Workbook instance
-        workbook = Workbook()
+    def ask_questions(self, chrome_options=True):
         # Load the Excel file
         workbook = openpyxl.load_workbook(file_name)
         worksheet = workbook['Sheet1']
@@ -64,70 +60,74 @@ class PoeSite:
                 print(" entering in loop...")
                 # past the question and click to send
                 self.put_question(row_number, worksheet)
+                self.driver.implicitly_wait(3)
 
-                print("------*********1********---------- ")
                 # Wait for the like button to be visible
                 index = self.wait_like_button(row_number)
-                print("------********2*********---------- ")
 
+                time.sleep(2)
                 # Wait for the hover to Ans box
                 self.hover_ans_box(index)
-                print("------********3*********---------- ")
 
+                time.sleep(1)
                 # click to drop down menu
                 self.click_drop_down(index)
-                print("------********4*********---------- ")
 
+
+                time.sleep(1)
                 # Click on the copy button
                 self.click_copy_butt(index)
-                print("------********5*********---------- ")
+                print(" Copying the data..")
 
+                time.sleep(1)
                 # Copy data from clipboard
                 clipboard, copied_data = self.copy_clipboard()
-                print("------********6*********---------- ")
+
                 # Write data to Excel file
                 self.save_ans(copied_data, row_number, worksheet)
-                print("------*********7********---------- ")
 
+
+                time.sleep(1)
                 # Save the Excel file
                 workbook.save(file_name)
                 print("saving the answer in column 3 and row " + str(row_number) + " to the file")
                 # Reset clipboard
                 clipboard.copy('')
-                print("------*********8********---------- ")
 
+
+                time.sleep(1)
                 #  copy and click on suggest question 4th question
                 self.copy_question(index, row_number, worksheet)
                 self.click_suggest_question(index)
-                print("------*********9********---------- ")
+                print(" clicking the suggestion question")
 
+                time.sleep(1)
                 # Wait for the  suggest question ans like button to be visible
                 index2 = self.wait_sugg_like(index)
-                print("------*********10********---------- ")
 
                 # Wait for the suggest Ans box to hover
                 self.hover_sugg_ans_box(index2)
-                print("------*********11********---------- ")
 
                 # click to  suggest drop down menu
                 self.click_sugg_drop_down(index2)
-                print("------********12*********---------- ")
 
                 # Click on the copy button
                 self.click_sugg_copy_butt(index2)
                 print("copying text....")
-                print("------********13*********---------- ")
 
+
+                time.sleep(1)
                 clipboard, copied_data = self.copy_clipboard()
 
+                time.sleep(1)
                 # Write data to Excel file
                 self.save_sugg_ans(copied_data, row_number, worksheet)
-                print("------********14*********---------- ")
 
+                time.sleep(1)
                 # Save the Excel file
                 workbook.save(file_name)
                 print("saving the  suggested answer in column 4 and row " + str(row_number) + " to the file")
-                print("------********15*********---------- ")
+
 
                 # Reset clipboard
                 clipboard.copy('')
@@ -227,7 +227,6 @@ class PoeSite:
         copy = wait.until(EC.visibility_of_element_located((By.XPATH, copy_but)))
         time.sleep(1)
         copy.click()
-
 
     def save_sugg_ans(self, copied_data, row_number, worksheet):
         worksheet.cell(row=row_number, column=4).value = copied_data

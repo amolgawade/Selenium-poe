@@ -77,34 +77,34 @@ class PoeSite:
                 self.driver.find_element(By.XPATH, "//*[@id='__next']/div[1]/section/footer/div/div[3]/button").click()
 
                 # Wait for the like button to be visible
-                wait = WebDriverWait(self.driver, timeout=100)
+                wait = WebDriverWait(self.driver, timeout=60)
                 index = 0 + row_number
                 wait.until(EC.visibility_of_element_located(
                             (By.XPATH, "//*[@id='__next']/div[1]/section/div/div/div[{}]/section/button[2]".format(index))))
 
                 # Wait for the hover_box
-                wait = WebDriverWait(self.driver, timeout=30)
+                wait = WebDriverWait(self.driver, timeout=20)
                 hover_box = "//*[@id='__next']/div[1]/section/div/div/div[{}]/div[2]/div[2]/div[1]/div[1]".format(index)
                 box = wait.until(EC.visibility_of_element_located((By.XPATH, hover_box)))
                 actions = ActionChains(self.driver)
                 actions.move_to_element(box).click().perform()
 
                 # hover to drop down menu
-                time.sleep(3)
-                wait = WebDriverWait(self.driver, timeout=30)
+                time.sleep(1)
+                wait = WebDriverWait(self.driver, timeout=20)
                 hover_xpath = "//*[@id='__next']/div[1]/section/div/div/div[{}]/div[2]/div[3]/div/div/button/div".format(
                     index)
                 hover = wait.until(EC.visibility_of_element_located((By.XPATH, hover_xpath)))
-                time.sleep(3)
+                time.sleep(1)
                 actions = ActionChains(self.driver)
                 actions.move_to_element(hover).click().perform()
 
                 # Click on the copy button
-                wait = WebDriverWait(self.driver, timeout=30)
+                wait = WebDriverWait(self.driver, timeout=20)
                 copy_but = "//*[@id='__next']/div[1]/section/div/div/div[{}]/div[2]/div[3]/div/div/div/div/button[3]".format(
                     index)
                 copy = wait.until(EC.visibility_of_element_located((By.XPATH, copy_but)))
-                time.sleep(3)
+                time.sleep(2)
                 copy.click()
                 print("copying text....")
 
